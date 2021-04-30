@@ -14,4 +14,22 @@
        android:layout_alignParentTop="true"
        android:layout_alignParentStart="true"/>
 
+   <TextView
+       android:id="@+id/error_tv"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_centerInParent="true"
+       android:textSize="16sp"
+       android:textStyle="bold"
+       android:fontFamily="sans-serif-medium"
+       android:visibility="gone"/>
+   
+   <ProgressBar
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:id="@+id/progress_status"
+      style="@style/Widget.AppCompat.ProgressBar"
+       android:layout_centerInParent="true"/>
+
+
 </RelativeLayout>

@@ -6,11 +6,19 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
 public class StoryUtils {
 
-    public static final String NEWS_BASE_URL = "http://content.guardianapis.com/search?q=debate&tag=politics/politics&from-date=2014-01-01&api-key=test";
+    public static final String NEWS_BASE_URL = "https://content.guardianapis.com/search?";
 
     public static final String STORY_JSON = "{\n" +
             "  \"response\": {\n" +
@@ -157,7 +165,58 @@ public class StoryUtils {
             "  }\n" +
             "}";
 
-    public static ArrayList<Story> fetchStories(String storiesJson){
+    public static ArrayList<Story> fetchStories(String urlString){
+
+        URL url = createUrl(urlString);
+        String jsonResponse = makeHttpRequest(url);
+        if (jsonResponse!=null){
+            return extractStory(jsonResponse);
+        }
+        return null;
+    }
+
+    private static String makeHttpRequest(URL url) {
+        HttpURLConnection urlConnection = null;
+        InputStream inputStream = null;
+        String jsonResponse = null;
+
+        try {
+            urlConnection = (HttpURLConnection) url.openConnection();
+            urlConnection.setReadTimeout(10000);
+            urlConnection.setConnectTimeout(15000);
+            urlConnection.setRequestMethod("GET");
+            urlConnection.connect();
+
+            if (urlConnection.getResponseCode()==200){
+                inputStream = urlConnection.getInputStream();
+                jsonResponse = readFromStream(inputStream);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return jsonResponse;
+    }
+
+    private static String readFromStream(InputStream inputStream) {
+            StringBuilder storyBuilder = new StringBuilder();
+        if (inputStream!=null){
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+            try {
+                String line = bufferedReader.readLine();
+                while (line!=null){
+                   storyBuilder.append(line);
+                   line = bufferedReader.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    return storyBuilder.toString();
+    }
+
+
+    static ArrayList<Story> extractStory(String storiesJson){
         ArrayList<Story> stories = new ArrayList<>();
         try {
             JSONObject jsonObject = new JSONObject(storiesJson);
@@ -187,5 +246,15 @@ public class StoryUtils {
             e.printStackTrace();
         }
         return stories;
+    }
+    static URL createUrl(String urlString){
+        URL url = null;
+        try {
+            url = new URL(urlString);
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        return url;
     }
 }
