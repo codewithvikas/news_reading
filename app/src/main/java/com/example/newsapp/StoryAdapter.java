@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.newsapp.data.Story;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHolder> {
 
@@ -25,12 +26,14 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
         this.storyClickListener = storyClickListener;
     }
 
-    public void addAll(ArrayList<Story> s){
+    public void addAll(List<Story> s){
         stories.clear();
         stories.addAll(s);
+        notifyDataSetChanged();
     }
     public void clean(){
         stories.clear();
+        notifyDataSetChanged();
     }
     @NonNull
     @Override

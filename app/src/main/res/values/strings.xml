@@ -5,4 +5,6 @@
     <string name="author">Author</string>
     <string name="published_date">Published Date</string>
     <string name="type">Type</string>
+    <string name="error_msg">Something Went Wrong</string>
+    <string name="no_internet">No Internet Available. Please check the same.</string>
 </resources>
